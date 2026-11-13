@@ -1,0 +1,9 @@
+name = "zion-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+# Configure Supabase values as Worker secrets/bindings when the backend is ready.
+# Never commit credentials. Example: npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+
+[observability]
+enabled = true
