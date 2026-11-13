@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180" fill="none">
+  <defs>
+    <radialGradient id="core" cx="0" cy="0" r="1" gradientTransform="matrix(0 81 -74 0 90 89)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#775B83"/>
+      <stop offset="1" stop-color="#33253F"/>
+    </radialGradient>
+    <linearGradient id="horn" x1="24" y1="32" x2="66" y2="73" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E6D8F4"/>
+      <stop offset="1" stop-color="#8973A5"/>
+    </linearGradient>
+  </defs>
+  <path d="m41 58-19-38 42 21c16-8 36-8 52 0l42-21-19 38c10 12 15 26 15 43 0 35-27 63-69 72-42-9-69-37-69-72 0-17 5-31 15-43Z" fill="url(#core)" stroke="#C7B4E6" stroke-width="5" stroke-linejoin="round"/>
+  <path d="m34 34 31 16-10 18-21-34Zm112 0-31 16 10 18 21-34Z" fill="url(#horn)" stroke="#F2E9FF" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M52 87c6-8 18-8 24 0m28 0c6-8 18-8 24 0" stroke="#8FFFD0" stroke-width="8" stroke-linecap="round"/>
+  <path d="M70 116c13 10 27 10 40 0" stroke="#D8C8EC" stroke-width="5" stroke-linecap="round"/>
+  <path d="m90 57 7 11-7 10-7-10 7-11Z" fill="#FFE69A"/>
+  <circle cx="90" cy="68" r="4" fill="#FFF8D6"/>
+</svg>

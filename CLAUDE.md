@@ -34,7 +34,8 @@ Each world has five regular combat stages and one final guardian stage. Award re
 ### `client/`
 - Vite + TypeScript + Phaser 3. Use small, focused scenes and keep content data-driven.
 - Scene flow: `Boot` → `Preloader` → `MainMenu` → `Game`, with a separate `UIScene` HUD.
-- Current files include shared configuration, world definitions, and browser-local progression. The gameplay is an asset-free geometric prototype; replace placeholders with original/licensed assets as content is developed.
+- Current files include shared configuration, world definitions, validated local/cloud saves, a character studio, combat arenas, and original SVG illustrations in `client/public/assets/`.
+- Combat includes directional combos, dodge invulnerability, telegraphed enemy attacks, a charged area burst, and stage rewards. Keep all player-facing feedback encouraging and age-appropriate.
 - Keep the client buildable with `npm run build`. Avoid embedding secrets in client files or build-time variables.
 
 ### `worker/`
@@ -43,9 +44,9 @@ Each world has five regular combat stages and one final guardian stage. Award re
 - Add server-side validation, abuse controls, and appropriate error handling before production. Restrict CORS to the deployed Pages origin in production.
 
 ### Data and deployment
-- Supabase is the planned database. Credentials will be provided later; do not invent, commit, or expose real keys. Keep secret placeholders in Worker configuration/documentation only and store real values using Cloudflare secrets/bindings.
+- Supabase stores browser-anonymous player saves using the public URL and anon key in `client/.env.local` or Pages build variables. Apply `supabase/schema.sql` and enable Supabase Anonymous Sign-Ins. RLS restricts each save to its authenticated user; never use a service-role key in the client or commit credentials.
 - Deploy the frontend with Cloudflare Pages (`client` root, `npm run build`, `dist` output) and the API as a Cloudflare Worker (`worker` root, Wrangler).
-- Local development should not require Supabase credentials. Browser local storage is prototype-only; plan for server-backed save/progression once the schema and secrets exist.
+- Local development does not require Supabase credentials. Browser local storage remains available offline; when Supabase is configured, name, cosmetics, world unlocks, and best score sync to the player's anonymous account. Anonymous saves are currently browser-bound; account linking and recovery remain future work.
 
 ## Development guidelines
 
@@ -59,6 +60,6 @@ Each world has five regular combat stages and one final guardian stage. Award re
 
 ## Current implementation / next steps
 
-Implemented: Vite + TS + Phaser setup, initial scene flow, player-chosen name form, five-world data, basic keyboard movement/attack prototype, five stages plus a guardian per world, browser-local unlock progression, Hono Worker with validated `/api/score` and `/api/health`, Wrangler config, and documentation.
+Implemented: Vite + TS + Phaser setup, initial scene flow, player-chosen name and customization studio, five-world data, combo/dodge/burst combat, telegraphed enemy attacks, five stages plus a guardian per world, local and Supabase-backed save/progression, original SVG character/enemy illustrations, animated arena/UI, Hono Worker with validated `/api/score` and `/api/health`, Wrangler config, and documentation.
 
-Next: add tests; create original art/audio and narrative; implement robust combat, stage rewards and upgrades; build the weapon/outfit/hair/accessory customization UI and persistent evolution visuals; improve mobile input and accessibility; add Supabase schema and server-side persistence once credentials are available; lock down CORS and add production abuse protections.
+Next: add focused automated tests; create original audio and narrative; add deeper combat upgrades and persistent guardian evolution; improve mobile/controller input and accessibility; support account linking for cross-device saves; lock down CORS and add production abuse protections.

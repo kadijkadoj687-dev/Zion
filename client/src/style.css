@@ -13,38 +13,75 @@ html, body, #app { width: 100%; height: 100%; margin: 0; }
 body { min-width: 320px; min-height: 100vh; overflow: hidden; }
 canvas { display: block; }
 
-.zion-name-form {
+.zion-studio-form {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  justify-content: center;
-  align-items: center;
-  width: min(660px, 90vw);
+  width: min(850px, 92vw);
+  padding: 18px 22px;
+  border: 1px solid #536086;
+  border-radius: 20px;
+  background: linear-gradient(140deg, rgb(31 39 73 / 96%), rgb(20 24 48 / 96%));
+  box-shadow: 0 18px 55px rgb(3 5 18 / 45%), inset 0 1px rgb(255 255 255 / 8%);
   font-family: Nunito, sans-serif;
 }
-.zion-name-form input, .zion-name-form button {
-  min-height: 52px;
-  border: 2px solid #536086;
-  border-radius: 12px;
-  font: 700 17px Nunito, sans-serif;
+.zion-name-field, .zion-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #c4c9e8;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: left;
 }
-.zion-name-form input {
-  width: 330px;
-  padding: 0 16px;
+.zion-studio-form input, .zion-studio-form select, .zion-studio-form button {
+  min-height: 44px;
+  border: 1px solid #59658f;
+  border-radius: 10px;
+  font: 700 15px Nunito, sans-serif;
+}
+.zion-studio-form input, .zion-studio-form select {
+  width: 100%;
+  padding: 0 12px;
   color: #f4f5ff;
   background: #171b35;
   outline: none;
 }
-.zion-name-form input:focus { border-color: #8fffd0; }
-.zion-name-form button {
+.zion-studio-form input:focus, .zion-studio-form select:focus { border-color: #8fffd0; }
+.zion-customization-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.zion-studio-form button {
+  min-height: 48px;
   padding: 0 19px;
   color: #101225;
   background: #8fffd0;
   border-color: #8fffd0;
   cursor: pointer;
-  transition: transform 120ms ease, filter 120ms ease;
+  font-size: 17px;
+  font-weight: 900;
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease;
 }
-.zion-name-form button:hover { transform: translateY(-2px); filter: brightness(1.08); }
-@media (max-width: 600px) {
-  .zion-name-form { flex-direction: column; }
-  .zion-name-form input, .zion-name-form button { width: min(320px, 86vw); }
+.zion-studio-form button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 7px 22px rgb(143 255 208 / 22%);
+}
+.zion-studio-form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+@media (max-width: 760px) {
+  .zion-studio-form { width: min(620px, 92vw); padding: 14px; gap: 8px; }
+  .zion-customization-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .zion-studio-form input, .zion-studio-form select { min-height: 38px; font-size: 14px; }
+  .zion-studio-form button { min-height: 42px; }
+}
+@media (max-width: 480px) {
+  .zion-studio-form { width: 92vw; padding: 10px; }
+  .zion-customization-grid { gap: 6px; }
+  .zion-choice { font-size: 11px; }
+  .zion-studio-form input, .zion-studio-form select { padding: 0 7px; font-size: 12px; }
 }

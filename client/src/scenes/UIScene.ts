@@ -10,8 +10,10 @@ export class UIScene extends Phaser.Scene {
 
   create(data: { worldId?: number; playerName?: string }): void {
     const world = WORLDS[data.worldId ?? 0];
-    this.add.text(1240, 680, `${data.playerName ?? 'Traveler'}  •  ${world.name}`, {
-      ...TEXT_STYLE, fontSize: '14px', color: '#aab0d4',
-    }).setOrigin(1, 1);
+    this.add.rectangle(640, 698, 410, 30, 0x11172b, 0.76)
+      .setStrokeStyle(1, world.accent, 0.28);
+    this.add.text(640, 698, `${data.playerName ?? 'Traveler'}  •  ${world.name}   |   SPACE Strike  ·  SHIFT Dodge  ·  Q Burst`, {
+      ...TEXT_STYLE, fontSize: '13px', color: '#d3d8f2',
+    }).setOrigin(0.5);
   }
 }
