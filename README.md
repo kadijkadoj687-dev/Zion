@@ -1,6 +1,8 @@
 # Zion
 
-Zion is a Phaser 3 action-adventure starter about a player-chosen hero restoring light across five parallel worlds. This repository contains a playable, asset-free prototype and a Cloudflare Worker API scaffold.
+Zion is a Phaser 3 action-adventure about a player-chosen hero restoring light across five parallel worlds.
+
+**Play Zion:** [https://zion-1y9.pages.dev](https://zion-1y9.pages.dev)
 
 ## Project layout
 
