@@ -10,8 +10,47 @@
 
 * { box-sizing: border-box; }
 html, body, #app { width: 100%; height: 100%; margin: 0; }
-body { min-width: 320px; min-height: 100vh; overflow: hidden; }
-canvas { display: block; }
+body { min-width: 320px; min-height: 100vh; min-height: 100dvh; overflow: hidden; }
+#app { touch-action: none; }
+canvas { display: block; touch-action: none; }
+#rotate-device {
+  display: none;
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+  color: #f4f5ff;
+  background: radial-gradient(ellipse at 50% 35%, #29385b, #101225 72%);
+  font-family: Nunito, sans-serif;
+  text-align: center;
+}
+.rotate-device-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 320px;
+  padding: 28px;
+  border: 1px solid #536086;
+  border-radius: 24px;
+  background: rgb(27 32 64 / 80%);
+  box-shadow: 0 18px 55px rgb(3 5 18 / 45%);
+}
+.rotate-device-card strong { font-size: 22px; }
+.rotate-device-card span:last-child { color: #c4c9e8; font-size: 16px; }
+.rotate-device-icon {
+  color: #8fffd0;
+  font-size: 64px;
+  line-height: 1;
+  animation: rotate-hint 1.8s ease-in-out infinite;
+}
+@keyframes rotate-hint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
 
 .zion-studio-form {
   display: flex;
@@ -84,4 +123,13 @@ canvas { display: block; }
   .zion-customization-grid { gap: 6px; }
   .zion-choice { font-size: 11px; }
   .zion-studio-form input, .zion-studio-form select { padding: 0 7px; font-size: 12px; }
+}
+@media (orientation: portrait) and (pointer: coarse) {
+  #rotate-device { display: flex; }
+}
+@media (orientation: landscape) and (max-height: 480px) {
+  .zion-studio-form { width: min(670px, 82vw); gap: 7px; padding: 9px 14px; }
+  .zion-name-field, .zion-choice { gap: 3px; font-size: 11px; }
+  .zion-studio-form input, .zion-studio-form select { min-height: 34px; font-size: 13px; }
+  .zion-studio-form button { min-height: 38px; font-size: 15px; }
 }

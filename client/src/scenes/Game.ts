@@ -42,6 +42,10 @@ export class Game extends Phaser.Scene {
   private dashInvulnerableUntil = 0;
   private dashReadyAt = 0;
   private facing = new Phaser.Math.Vector2(1, 0);
+  private touchMove = new Phaser.Math.Vector2();
+  private joystickPointerId: number | null = null;
+  private joystickNub!: Phaser.GameObjects.Arc;
+  private touchControlsEnabled = false;
   private playerBaseScale = 1;
   private statusText!: Phaser.GameObjects.Text;
   private speechText!: Phaser.GameObjects.Text;
@@ -67,6 +71,8 @@ export class Game extends Phaser.Scene {
     this.dashInvulnerableUntil = 0;
     this.dashReadyAt = 0;
     this.facing = new Phaser.Math.Vector2(1, 0);
+    this.touchMove.set(0, 0);
+    this.joystickPointerId = null;
     this.enemies = [];
     this.closed = false;
   }
@@ -96,6 +102,11 @@ export class Game extends Phaser.Scene {
     this.playerBody.setSize(42, 54, true).setCollideWorldBounds(true);
     this.cursors = this.input.keyboard!.createCursorKeys();
     this.keys = this.input.keyboard!.addKeys('W,A,S,D,SPACE,ESC,SHIFT,Q') as Record<string, Phaser.Input.Keyboard.Key>;
+    this.touchControlsEnabled = this.sys.game.device.input.touch;
+    if (this.touchControlsEnabled) {
+      this.input.addPointer(2);
+      this.createTouchControls();
+    }
 
     this.statusText = this.add.text(35, 77, '', {
       ...TEXT_STYLE, fontSize: '17px', lineSpacing: 7,
@@ -119,7 +130,10 @@ export class Game extends Phaser.Scene {
     if (this.cursors.right.isDown || this.keys.D.isDown) x += 1;
     if (this.cursors.up.isDown || this.keys.W.isDown) y -= 1;
     if (this.cursors.down.isDown || this.keys.S.isDown) y += 1;
+    x += this.touchMove.x;
+    y += this.touchMove.y;
     const movement = new Phaser.Math.Vector2(x, y);
+    if (movement.lengthSq() > 1) movement.normalize();
     if (movement.lengthSq() > 0) this.facing.copy(movement.normalize());
 
     if (Phaser.Input.Keyboard.JustDown(this.keys.SHIFT) && time >= this.dashReadyAt) this.dash(time, movement);
@@ -167,6 +181,83 @@ export class Game extends Phaser.Scene {
         delay: Phaser.Math.Between(0, 1400),
       });
     }
+  }
+
+  private createTouchControls(): void {
+    const joystickX = 145;
+    const joystickY = 555;
+    this.add.circle(joystickX, joystickY, 82, 0x11172b, 0.7)
+      .setStrokeStyle(3, 0xffffff, 0.38).setDepth(11);
+    this.add.circle(joystickX, joystickY, 52, 0xffffff, 0.035)
+      .setStrokeStyle(2, 0xffffff, 0.12).setDepth(11);
+    this.joystickNub = this.add.circle(joystickX, joystickY, 29, 0x8fffd0, 0.7)
+      .setStrokeStyle(3, 0xffffff, 0.85).setDepth(12);
+    const joystickZone = this.add.zone(joystickX, joystickY, 190, 190)
+      .setInteractive(new Phaser.Geom.Circle(95, 95, 95), Phaser.Geom.Circle.Contains)
+      .setDepth(13);
+    joystickZone.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.joystickPointerId !== null) return;
+      this.joystickPointerId = pointer.id;
+      this.updateJoystick(pointer, joystickX, joystickY);
+    });
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.id === this.joystickPointerId) this.updateJoystick(pointer, joystickX, joystickY);
+    });
+    const releaseJoystick = (pointer: Phaser.Input.Pointer): void => {
+      if (pointer.id !== this.joystickPointerId) return;
+      this.joystickPointerId = null;
+      this.touchMove.set(0, 0);
+      this.joystickNub.setPosition(joystickX, joystickY);
+    };
+    this.input.on('pointerup', releaseJoystick);
+    this.input.on('pointerupoutside', releaseJoystick);
+
+    this.createActionButton(1070, 564, 48, 'HIT', 0x8fffd0, () => this.attack(this.time.now));
+    this.createActionButton(1170, 482, 42, 'DODGE', 0xc3a7ff, () => {
+      if (this.time.now >= this.dashReadyAt) this.dash(this.time.now, this.touchMove);
+    });
+    this.createActionButton(1170, 590, 42, 'BURST', 0xffe69a, () => this.lightBurst());
+    this.add.text(145, 657, 'MOVE', {
+      ...TEXT_STYLE, fontSize: '13px', color: '#d3d8f2', fontStyle: 'bold',
+      backgroundColor: '#11172b99', padding: { x: 8, y: 3 },
+    }).setOrigin(0.5).setDepth(12);
+  }
+
+  private updateJoystick(pointer: Phaser.Input.Pointer, centerX: number, centerY: number): void {
+    const delta = new Phaser.Math.Vector2(pointer.x - centerX, pointer.y - centerY);
+    const radius = 52;
+    if (delta.length() > radius) delta.setLength(radius);
+    this.touchMove.copy(delta).scale(1 / radius);
+    this.joystickNub.setPosition(centerX + delta.x, centerY + delta.y);
+  }
+
+  private createActionButton(
+    x: number,
+    y: number,
+    radius: number,
+    label: string,
+    color: number,
+    action: () => void,
+  ): void {
+    const button = this.add.circle(x, y, radius, 0x11172b, 0.82)
+      .setStrokeStyle(4, color, 0.95)
+      .setDepth(12)
+      .setInteractive(new Phaser.Geom.Circle(radius, radius, radius), Phaser.Geom.Circle.Contains);
+    const text = this.add.text(x, y, label, {
+      ...TEXT_STYLE, fontSize: radius > 45 ? '13px' : '10px', color: '#ffffff', fontStyle: 'bold',
+      align: 'center',
+    }).setOrigin(0.5).setDepth(13);
+    button.on('pointerdown', () => {
+      button.setScale(0.9);
+      text.setScale(0.95);
+      action();
+    });
+    const release = (): void => {
+      button.setScale(1);
+      text.setScale(1);
+    };
+    button.on('pointerup', release);
+    button.on('pointerout', release);
   }
 
   private syncPlayerDetails(): void {

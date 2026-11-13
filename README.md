@@ -58,6 +58,7 @@ The score endpoint validates requests but deliberately does not persist data. Ga
 - Choose a weapon, outfit, hairstyle, and accessory in the character studio.
 - Use **Left/Right** to select an unlocked world.
 - Move with **WASD** or **arrow keys**; attack with **Space**, dodge with **Shift**, and use a charged light burst with **Q**.
+- On a phone, turn to landscape and use the on-screen joystick and **Hit**, **Dodge**, and **Burst** buttons; touch the world arrows to select a world.
 - Build attack combos, watch enemy warning glows, and dodge during the wind-up. Hits and perfect dodges charge the burst.
 - Each world has five regular encounters and a guardian encounter. Clear the guardian to restore that world's shard and unlock the next one. Saves include the chosen name, cosmetics, unlocked world, and best score.
 

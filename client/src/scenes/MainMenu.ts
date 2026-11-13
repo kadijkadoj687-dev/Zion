@@ -9,6 +9,8 @@ import { WORLDS } from '../game/worlds';
 export class MainMenu extends Phaser.Scene {
   private selectedWorld = 0;
   private worldText!: Phaser.GameObjects.Text;
+  private previousWorldButton!: Phaser.GameObjects.Text;
+  private nextWorldButton!: Phaser.GameObjects.Text;
   private saveStatus!: Phaser.GameObjects.Text;
   private form!: Phaser.GameObjects.DOMElement;
   private save!: GameSave;
@@ -41,6 +43,16 @@ export class MainMenu extends Phaser.Scene {
     this.worldText = this.add.text(GAME_WIDTH / 2, 397, '', {
       ...TEXT_STYLE, fontSize: '22px', color: '#ffe69a', align: 'center',
     }).setOrigin(0.5);
+    this.previousWorldButton = this.add.text(350, 397, '‹', {
+      ...TEXT_STYLE, fontSize: '48px', color: '#ffffff', fontStyle: 'bold',
+      backgroundColor: '#1b2040', padding: { x: 14, y: 1 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    this.nextWorldButton = this.add.text(930, 397, '›', {
+      ...TEXT_STYLE, fontSize: '48px', color: '#ffffff', fontStyle: 'bold',
+      backgroundColor: '#1b2040', padding: { x: 14, y: 1 },
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+    this.previousWorldButton.on('pointerdown', () => this.changeWorld(-1));
+    this.nextWorldButton.on('pointerdown', () => this.changeWorld(1));
     this.refreshWorldLabel();
 
     const savedName = this.save.playerName;
@@ -93,7 +105,9 @@ export class MainMenu extends Phaser.Scene {
       this.scene.start('Game', data);
     });
 
-    this.add.text(GAME_WIDTH / 2, 681, '← / → world   •   Move: WASD / arrows   •   Attack: Space   •   Dodge: Shift   •   Light burst: Q', {
+    this.add.text(GAME_WIDTH / 2, 681, this.sys.game.device.input.touch
+      ? 'Tap ‹ / › to choose a world  •  In the arena: use the touch controls'
+      : '← / → world   •   Move: WASD / arrows   •   Attack: Space   •   Dodge: Shift   •   Light burst: Q', {
       ...TEXT_STYLE, fontSize: '14px', color: '#aab0d4',
     }).setOrigin(0.5);
     this.input.keyboard?.on('keydown-LEFT', () => this.changeWorld(-1));
@@ -178,6 +192,8 @@ export class MainMenu extends Phaser.Scene {
   private refreshWorldLabel(): void {
     const world = WORLDS[this.selectedWorld];
     this.worldText.setText(`‹   WORLD ${world.id + 1}: ${world.name.toUpperCase()}   ›\n${world.subtitle}`);
+    this.previousWorldButton?.setAlpha(this.selectedWorld === 0 ? 0.4 : 1);
+    this.nextWorldButton?.setAlpha(this.selectedWorld === this.save.unlockedWorld ? 0.4 : 1);
   }
 
   private escapeHtml(value: string): string {
